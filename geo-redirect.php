@@ -9,8 +9,10 @@ Author e-mail: ladrower@gmail.com
 Version: 3.3
 License: Free
 */
+
 require_once "geoip/geoipcity.inc";
 require_once "geo-redirect-admin.php";
+
 
 add_action( 'check_client_location', 'geo_redirect_client_location' );
 
@@ -30,7 +32,7 @@ class Geo_Redirect{
 	public function __construct()
 	{
 		$this->ip = $this->getClientIP();
-		$this->gi = geoip_open( dirname(__FILE__) . "/geoip/ipdatabase/GeoIP.dat/GeoIP.dat", GEOIP_STANDARD);
+		$this->gi = geoip_open( dirname(__FILE__) . "/geoip/db/GeoIP.dat", GEOIP_STANDARD);
 		$this->site_url = get_home_url();
 		$this->request_uri = $this->getRequestUri();
 		$this->no_redirect = (isset($_GET['no_redirect']) || (isset($_POST['pwd']) && isset($_POST['log']))) ? true : false;

@@ -3,11 +3,13 @@
  * Geo Redirect Admin functions
  */
 
+use IPlib\GeoIP;
+
 function geo_redirect_admin_page(){
-	
+
 	if ( function_exists('add_submenu_page') )
 		add_submenu_page( 'options-general.php', __('Geographical Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_admin_page_display' );
-	
+
 	}
 
 function geo_redirect_admin_description(){
@@ -17,8 +19,8 @@ function geo_redirect_admin_description(){
 			 Be attentive while entering redirect options, because wrong parameters can lead to infinite redirections etc.</p>
 			 <p>If you have some troubles accessing your site because of incorrect redirect,
 			 just add to browser\'s url «no_redirect» (example: '.get_home_url().'/sample-page/?<b>no_redirect</b>) to switch off the redirection.</p>';
-	
-	return $html;	
+
+	return $html;
 }
 
 function geo_redirect_pretty_permalink_checkbox($data){
@@ -32,24 +34,24 @@ function geo_redirect_admin_page_display(){
 
 	if (isset($_POST['submit']) && check_admin_referer('submit_geo_redirect_x','geo_redirect_nonce_y'))
 		geo_redirect_save();
-	
+
 	if ( !empty($_POST['submit'] ) )
 		$html = '<div id="message" class="updated fade"><p><strong>' . __('Options saved.') . '</strong></p></div>';
-	
+
 	$html .= '
     <div class="wrap">
     <div id="icon-options-general" class="icon32"><br></div>
     <h2>Geographical Redirect Options</h2>
 	<form action="" method="post" enctype="multipart/form-data">';
-	
+
 	$html .= geo_redirect_admin_description();
-	
+
 	$redirect = '';
 	$only_outsite = 0;
     $only_root = 0;
     $only_once = 0;
 	$lang_slug = 'lang';
-	
+
 	$geo_redirect_data = get_option('geo_redirect_data');
 	if ($geo_redirect_data === false) {
 		add_option('geo_redirect_data', '');
@@ -161,9 +163,9 @@ function geo_redirect_admin_page_display(){
 	$html .= '</tbody>
 		</table>
 	</div>';
-	
+
 	$html .= '<br clear="all" />';
-	
+
 	$html .= '<table class="wp-list-table widefat plugins" cellspacing="0">
 				<thead>
 					<tr>
@@ -179,7 +181,7 @@ function geo_redirect_admin_page_display(){
 					</tr>
 				</tbody>
 			</table>';
-	
+
 	$html .= '<br clear="all" />';
 
 	$html .= '<label><input type="checkbox" name="only_outsite" value="1" ' . (($only_outsite == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors who come from another site by link</label>&nbsp;<b style="cursor:help" title="This means your pages will be always accessible by direct link entered in browser, but clients that come, for example, from google.com will be redirected according to installed parameters">(?)</b>';
@@ -190,20 +192,20 @@ function geo_redirect_admin_page_display(){
 
     $html .= '<br clear="all" />';
 
-    $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>'; 
+    $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
 
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
-				</p>'; 
+				</p>';
 
 	$html .= wp_nonce_field('submit_geo_redirect_x', 'geo_redirect_nonce_y', true, false);
-	$html .= '</form></div>'; 
-	echo $html;	
-	
+	$html .= '</form></div>';
+	echo $html;
+
 	geo_redirect_javascript();
-	
+
 	}
-	
+
 function geo_redirect_javascript() {
 
     $site_url_parsed = parse_url(get_home_url());
@@ -301,13 +303,13 @@ function geo_redirect_javascript() {
         }
 
     }
-	</script>	
+	</script>
 	<?php
 
 }
 
 function geo_redirect_save(){
-	
+
 	$country_ids 	    = (array) $_POST['country_ids'];
     $redirect_options 	= (array) $_POST['redirect_options'];
 	$lang_codes 	    = (array) $_POST['lang_codes'];
@@ -334,19 +336,19 @@ function geo_redirect_save(){
                                 'pretty'            => (in_array(intval($country_id),$pretties))?1:0,
 								'domain' 		    => $domain,
 								'url' 			    => (string) htmlspecialchars( trim( strip_tags( $urls[$key] ) ) ) );
-			
+
 		}
-		
+
 	} else {
-		$redirect = '';	
+		$redirect = '';
 	}
-	
+
 	$data = array(	'redirect' 		=> $redirect,
 					'only_outsite' 	=> $only_outsite,
                     'only_root'     => $only_root,
                     'only_once'     => $only_once,
 					'lang_slug'		=> $lang_slug );
-					
+
 	update_option( 'geo_redirect_data', $data);
 }
 
