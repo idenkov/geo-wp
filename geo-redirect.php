@@ -26,7 +26,7 @@ class Geo_Redirect{
 	private $request_uri;
 	private $no_redirect;
 	private $referer;
-	
+
 	public function __construct()
 	{
 		$this->ip = $this->getClientIP();
@@ -63,10 +63,10 @@ class Geo_Redirect{
 
         return $uri;
     }
-	
+
 	public function getCountryCode()
 	{
-		$this->country_code = geoip_country_code_by_addr($this->gi,$this->ip);  
+		$this->country_code = geoip_country_code_by_addr($this->gi,$this->ip);
 		return $this->country_code;
 	}
 
@@ -75,21 +75,21 @@ class Geo_Redirect{
 		$this->country_id = geoip_country_id_by_addr($this->gi,$this->ip);
 		return $this->country_id;
 	}
-	
+
 	public function getGeoRedirectData()
 	{
 		if (function_exists('get_option'))
 			$this->geo_redirect_data = get_option('geo_redirect_data');
 		return $this->geo_redirect_data;
 	}
-	
+
 	public function getSiteLang()
 	{
 		if (!is_array($this->geo_redirect_data))
 			return '';
-			
+
 		$this->lang_slug = ($this->geo_redirect_data['lang_slug'] != '') ? $this->geo_redirect_data['lang_slug'] : 'lang';
-		$this->site_lang = (isset($_GET[$this->lang_slug])) ? ( (string) htmlentities(strtolower($_GET[$this->lang_slug])) ) : '';	
+		$this->site_lang = (isset($_GET[$this->lang_slug])) ? ( (string) htmlentities(strtolower($_GET[$this->lang_slug])) ) : '';
 		return $this->site_lang;
 	}
 
@@ -107,7 +107,7 @@ class Geo_Redirect{
         }
         return array_unique($codes, SORT_STRING);
     }
-	
+
 	private function selectRedirectOption($data)
     {
         switch ($data['redirect_option']) {
@@ -163,7 +163,7 @@ class Geo_Redirect{
 
         if ($this->checkOnceCookie())
             return;
-		
+
 		if (is_array($this->geo_redirect_data['redirect'])) {
 
             $this->getCountryId();
@@ -184,9 +184,9 @@ class Geo_Redirect{
                 $this->selectRedirectOption($default_data);
             }
 		}
-	
+
 	}
-	
+
 	private function redirectByUrl($url)
 	{
 		if ($url != ''){
@@ -201,7 +201,7 @@ class Geo_Redirect{
 			$this->redirectTo($to);
 		}
 	}
-	
+
 	private function redirectByLang($lang_code)
 	{
 		if ($lang_code != ''){
@@ -215,7 +215,7 @@ class Geo_Redirect{
 	{
 		if ($this->getRedirectDataFlag('only_once') == 1) {
 			setcookie('wordpress_geo_redirect_once', '1', time()+60*60*24*365, '/');
-		} 
+		}
 	}
 
     private function deepReplace( $search, $subject )
@@ -245,7 +245,7 @@ class Geo_Redirect{
     	$location = $this->deepReplace($strip, $location);
     	return $location;
     }
-	
+
 	private function redirectTo($to)
 	{
         $this->beforeRedirect();
@@ -277,7 +277,7 @@ class Geo_Redirect{
         }
         return false;
     }
-	
+
 	private function checkReferer()
 	{
 		if ($this->getRedirectDataFlag('only_outsite') == 1) {
@@ -288,17 +288,17 @@ class Geo_Redirect{
             $outsite = parse_url($this->referer);
 			if ($insite['scheme'] . '://' . $insite['host'] != $outsite['scheme'] . '://' . $outsite['host'])
 				return false;
-				
+
 			return true;
 		}
 		return false;
 	}
-	
+
 	public function __destruct()
 	{
 		geoip_close($this->gi);
-	}	
-	
+	}
+
 }
 
 function geo_redirect_client_location() {
