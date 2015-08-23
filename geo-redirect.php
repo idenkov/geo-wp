@@ -10,6 +10,8 @@ Version: 1.0
 License: Free
 */
 
+defined('ABSPATH') or die("How About NO?");
+
 require_once "geoip/geoipcity.inc";
 require_once "geo-redirect-admin.php";
 
@@ -32,7 +34,7 @@ class Geo_Redirect{
 	public function __construct()
 	{
 		$this->ip = $this->getVisitorIP();
-		$this->gi = geoip_open( dirname(__FILE__) . "/geoip/db/GeoIP.dat", GEOIP_STANDARD);
+		$this->gi = IPlib\geoip_open( dirname(__FILE__) . "/geoip/db/GeoIP.dat", GEOIP_STANDARD);
 		$this->site_url = get_home_url();
 		$this->request_uri = $this->getRequestUri();
 		$this->no_redirect = (isset($_GET['no_redirect']) || (isset($_POST['pwd']) && isset($_POST['log']))) ? true : false;
@@ -74,7 +76,7 @@ class Geo_Redirect{
 
 	public function getCountryId()
 	{
-		$this->country_id = geoip_country_id_by_addr($this->gi,$this->ip);
+		$this->country_id = IPlib\geoip_country_id_by_addr($this->gi,$this->ip);
 		return $this->country_id;
 	}
 
@@ -298,7 +300,7 @@ class Geo_Redirect{
 
 	public function __destruct()
 	{
-		geoip_close($this->gi);
+		IPlib\geoip_close($this->gi);
 	}
 
 }
