@@ -1,6 +1,6 @@
 <?php
 /**
- * Geo Redirect Admin functions
+ * Geo Redirect Settings page
  */
 
 use IPlib\GeoIP;
@@ -8,7 +8,7 @@ use IPlib\GeoIP;
 function geo_redirect_admin_page(){
 
 	if ( function_exists('add_submenu_page') )
-		add_submenu_page( 'options-general.php', __('Geographical Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_admin_page_display' );
+		add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_admin_page_display' );
 
 	}
 
@@ -48,8 +48,8 @@ function geo_redirect_admin_page_display(){
 
 	$redirect = '';
 	$only_outsite = 0;
-    $only_root = 0;
-    $only_once = 0;
+  $only_root = 0;
+  $only_once = 0;
 	$lang_slug = 'lang';
 
 	$geo_redirect_data = get_option('geo_redirect_data');
@@ -58,8 +58,8 @@ function geo_redirect_admin_page_display(){
 	} elseif (is_array($geo_redirect_data)) {
 		$redirect = $geo_redirect_data['redirect'];
 		$only_outsite = $geo_redirect_data['only_outsite'];
-        $only_root = $geo_redirect_data['only_root'];
-        $only_once = $geo_redirect_data['only_once'];
+    $only_root = $geo_redirect_data['only_root'];
+    $only_once = $geo_redirect_data['only_once'];
 		$lang_slug = $geo_redirect_data['lang_slug'];
 	}
 
@@ -186,13 +186,13 @@ function geo_redirect_admin_page_display(){
 
 	$html .= '<label><input type="checkbox" name="only_outsite" value="1" ' . (($only_outsite == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors who come from another site by link</label>&nbsp;<b style="cursor:help" title="This means your pages will be always accessible by direct link entered in browser, but clients that come, for example, from google.com will be redirected according to installed parameters">(?)</b>';
 
-    $html .= '<br clear="all" />';
+  $html .= '<br clear="all" />';
 
-    $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
+  $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
 
-    $html .= '<br clear="all" />';
+  $html .= '<br clear="all" />';
 
-    $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
+  $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
 
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
@@ -311,14 +311,14 @@ function geo_redirect_javascript() {
 function geo_redirect_save(){
 
 	$country_ids 	    = (array) $_POST['country_ids'];
-    $redirect_options 	= (array) $_POST['redirect_options'];
+  $redirect_options 	= (array) $_POST['redirect_options'];
 	$lang_codes 	    = (array) $_POST['lang_codes'];
-    $pretties 	        = (array) $_POST['pretties'];
+  $pretties 	        = (array) $_POST['pretties'];
 	$domains 		    = (array) $_POST['domains'];
 	$urls 			    = (array) $_POST['urls'];
 	$only_outsite 	    = intval($_POST['only_outsite']);
-    $only_root 	        = intval($_POST['only_root']);
-    $only_once          = intval($_POST['only_once']);
+  $only_root 	        = intval($_POST['only_root']);
+  $only_once          = intval($_POST['only_once']);
 	$lang_slug		    = (trim($_POST['lang_slug']) != '') ? (string)urlencode(strtolower(trim($_POST['lang_slug']))) : 'lang';
 	if (count($country_ids) > 0) {
 		$redirect = array();
@@ -330,12 +330,14 @@ function geo_redirect_save(){
                 $domain = $domain_url_parsed['scheme'] . '://' . $domain_url_parsed['host'];
             }
 
-			$redirect[] = array('country_id' 	    => intval($country_id),
-                                'redirect_option' 	=> intval($redirect_options[$key]),
+			$redirect[] = array(
+								'country_id' 	    => intval($country_id),
+                'redirect_option' 	=> intval($redirect_options[$key]),
 								'lang_code' 	    => (string) htmlspecialchars( strtolower( trim( strip_tags( $lang_codes[$key] ) ) ) ),
-                                'pretty'            => (in_array(intval($country_id),$pretties))?1:0,
+                'pretty'            => (in_array(intval($country_id),$pretties))?1:0,
 								'domain' 		    => $domain,
-								'url' 			    => (string) htmlspecialchars( trim( strip_tags( $urls[$key] ) ) ) );
+								'url' 			    => (string) htmlspecialchars( trim( strip_tags( $urls[$key] ) ) )
+							);
 
 		}
 
@@ -343,11 +345,13 @@ function geo_redirect_save(){
 		$redirect = '';
 	}
 
-	$data = array(	'redirect' 		=> $redirect,
+	$data = array(
+					'redirect' 		=> $redirect,
 					'only_outsite' 	=> $only_outsite,
-                    'only_root'     => $only_root,
-                    'only_once'     => $only_once,
-					'lang_slug'		=> $lang_slug );
+          'only_root'     => $only_root,
+          'only_once'     => $only_once,
+					'lang_slug'		=> $lang_slug
+				);
 
 	update_option( 'geo_redirect_data', $data);
 }

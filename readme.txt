@@ -50,7 +50,7 @@ A: Redirection applies only to frontend. Dashboard will be always accessible by 
 * Simpler user interface
 
 = 2.0 =
-* New stable improved release. 
+* New stable improved release.
 * Added Static URL redirect option.
 * More friendly user interface.
 

@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name:Geo Redirect
-Plugin URI: http://wordpress.org/extend/plugins/geographical-redirect/
-Description: A plugin that provides visitor redirect according to their geographical location
-Author: Ladrower
-Author URI: http://profiles.wordpress.org/users/Ladrower/
-Author e-mail: ladrower@gmail.com
-Version: 3.3
+Plugin URI:
+Description: Plugin that redirect visitors based on their location
+Author: Ivan Denkov
+Author URI: http://reallusiondesign.com/
+Author e-mail: ivan.denkov87@gmail.com
+Version: 1.0
 License: Free
 */
 
@@ -14,7 +14,7 @@ require_once "geoip/geoipcity.inc";
 require_once "geo-redirect-admin.php";
 
 
-add_action( 'check_client_location', 'geo_redirect_client_location' );
+add_action( 'check_visitor_location', 'geo_redirect_client_location' );
 
 class Geo_Redirect{
 	private $ip;
@@ -31,7 +31,7 @@ class Geo_Redirect{
 
 	public function __construct()
 	{
-		$this->ip = $this->getClientIP();
+		$this->ip = $this->getVisitorIP();
 		$this->gi = geoip_open( dirname(__FILE__) . "/geoip/db/GeoIP.dat", GEOIP_STANDARD);
 		$this->site_url = get_home_url();
 		$this->request_uri = $this->getRequestUri();
@@ -42,7 +42,7 @@ class Geo_Redirect{
 		$this->getSiteLang();
 	}
 
-	private function getClientIP()
+	private function getVisitorIP()
 	{
 		$ip = $_SERVER['REMOTE_ADDR'];
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -216,7 +216,7 @@ class Geo_Redirect{
 	private function beforeRedirect()
 	{
 		if ($this->getRedirectDataFlag('only_once') == 1) {
-			setcookie('wordpress_geo_redirect_once', '1', time()+60*60*24*365, '/');
+			setcookie('wp_geo_redirect_once', '1', time()+60*60*24*365, '/');
 		}
 	}
 
@@ -309,7 +309,7 @@ function geo_redirect_client_location() {
 }
 
 if (!is_admin()) {
-	do_action('check_client_location');
+	do_action('check_visitor_location');
 }
 
 ?>
