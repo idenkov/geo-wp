@@ -1,5 +1,5 @@
 <?php
-// Copyright 2015 MaxMind, Inc. All Rights Reserved
+// Copyright 2015 MaxMind, Inc. All Rights Reservedz
 
 defined('ABSPATH') or die("How About NO?");
 
