@@ -3,6 +3,8 @@
  * Geo Redirect Settings page
  */
 
+defined('ABSPATH') or die("How About NO?");
+
 use IPlib\GeoIP;
 
 function geo_redirect_admin_page(){

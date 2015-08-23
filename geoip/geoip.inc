@@ -22,6 +22,8 @@
 
  namespace IPlib;
 
+defined('ABSPATH') or die("How About NO?");
+
 define("GEOIP_COUNTRY_BEGIN", 16776960);
 define("GEOIP_STATE_BEGIN_REV0", 16700000);
 define("GEOIP_STATE_BEGIN_REV1", 16000000);

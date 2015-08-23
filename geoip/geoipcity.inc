@@ -19,6 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307    USA
  */
 
+defined('ABSPATH') or die("How About NO?");
+
 define("FULL_RECORD_LENGTH", 50);
 
 require_once 'geoip.inc';
