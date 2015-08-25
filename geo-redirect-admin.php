@@ -1,25 +1,26 @@
 <?php
 /**
- * Geo Redirect Settings page
+ * GeoIP Redirect Settings page
  */
 
 defined('ABSPATH') or die("How About NO?");
 
 use IPlib\GeoIP;
 
-function geo_redirect_admin_page(){
+function geo_redirect_settings_page(){
 
 	if ( function_exists('add_submenu_page') )
-		add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_admin_page_display' );
+		add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_settings_page_display' );
 
 	}
 
 function geo_redirect_admin_description(){
-	$html = '<p>This plugin allows you to redirect your visitors according to their country.</p>
-			 <p>Just add the country from selectbox and fill in preferable options.</p>
-			 <p>This plugin does not create different language versions of your site, but just redirects to existing ones.<br/>
-			 Be attentive while entering redirect options, because wrong parameters can lead to infinite redirections etc.</p>
-			 <p>If you have some troubles accessing your site because of incorrect redirect,
+	$html = '<p>
+	This plugins allows you to redirect vistors on your site to different locations, languages and even outside the site with custom URL option.</p>
+			 <p>Just choose the country from the dropdown and fill in preferable options.</p>
+			 <p>The plugin does not create differnt language versions of your site, but it can be used in combination with such plugins.<br/>
+			 Be careful while entering redirect options, because wrong parameters can lead to infinite redirections etc.</p>
+			 <p>If you have some troubles accessing your site because of infinite redirect loop,
 			 just add to browser\'s url «no_redirect» (example: '.get_home_url().'/sample-page/?<b>no_redirect</b>) to switch off the redirection.</p>';
 
 	return $html;
@@ -32,7 +33,7 @@ function geo_redirect_pretty_permalink_checkbox($data){
     return $html;
 }
 
-function geo_redirect_admin_page_display(){
+function geo_redirect_settings_page_display(){
 
 	if (isset($_POST['submit']) && check_admin_referer('submit_geo_redirect_x','geo_redirect_nonce_y'))
 		geo_redirect_save();
@@ -43,7 +44,7 @@ function geo_redirect_admin_page_display(){
 	$html .= '
     <div class="wrap">
     <div id="icon-options-general" class="icon32"><br></div>
-    <h2>Geographical Redirect Options</h2>
+    <h2>Geo Redirect Options</h2>
 	<form action="" method="post" enctype="multipart/form-data">';
 
 	$html .= geo_redirect_admin_description();
@@ -185,21 +186,14 @@ function geo_redirect_admin_page_display(){
 			</table>';
 
 	$html .= '<br clear="all" />';
-
-	$html .= '<label><input type="checkbox" name="only_outsite" value="1" ' . (($only_outsite == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors who come from another site by link</label>&nbsp;<b style="cursor:help" title="This means your pages will be always accessible by direct link entered in browser, but clients that come, for example, from google.com will be redirected according to installed parameters">(?)</b>';
-
+	$html .= '<label><input type="checkbox" name="only_outsite" value="1" ' . (($only_outsite == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors who come from another site by link</label>&nbsp;<b style="cursor:help" title="This means your pages will be always accessible by direct link entered in browser, but clients that come, for example, from google.com will be redirected according to added redirects">(?)</b>';
   $html .= '<br clear="all" />';
-
   $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
-
   $html .= '<br clear="all" />';
-
   $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
-
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
 				</p>';
-
 	$html .= wp_nonce_field('submit_geo_redirect_x', 'geo_redirect_nonce_y', true, false);
 	$html .= '</form></div>';
 	echo $html;
@@ -213,8 +207,8 @@ function geo_redirect_javascript() {
     $site_url_parsed = parse_url(get_home_url());
 	?>
 	<script type="text/javascript">
-	var j = jQuery;
-    var geoRedirect = {
+		var j = jQuery;
+	  var geoRedirect = {
 
         url_scheme: '<?php echo $site_url_parsed['scheme']; ?>',
         domain_url: '<?php echo $site_url_parsed['host']; ?>',
@@ -305,6 +299,7 @@ function geo_redirect_javascript() {
         }
 
     }
+
 	</script>
 	<?php
 
@@ -358,6 +353,6 @@ function geo_redirect_save(){
 	update_option( 'geo_redirect_data', $data);
 }
 
-add_action( 'admin_menu', 'geo_redirect_admin_page' );
+add_action( 'admin_menu', 'geo_redirect_settings_page' );
 
 ?>

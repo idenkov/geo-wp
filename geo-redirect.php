@@ -6,22 +6,25 @@ Description: Plugin that redirect visitors based on their location
 Author: Ivan Denkov
 Author URI: http://reallusiondesign.com/
 Author e-mail: ivan.denkov87@gmail.com
+Text Domain: geo-redirect
 Version: 1.0
 License: GPL2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-{Plugin Name} is free software: you can redistribute it and/or modify
+Geo Redirect plugin is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
 any later version.
 
-{Plugin Name} is distributed in the hope that it will be useful,
+Geo Redirect plugin is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with {Plugin Name}. If not, see {License URI}.
 */
+
+namespace Geo_Redirect;
+use Geo_Redirect\Geo_Redirect;
+use IPlib;
 
 defined('ABSPATH') or die("How About NO?");
 
@@ -29,7 +32,7 @@ require_once "geoip/geoipcity.inc";
 require_once "geo-redirect-admin.php";
 
 
-add_action( 'check_visitor_location', 'geo_redirect_client_location' );
+add_action( 'check_visitor_location', 'Geo_Redirect\geo_redirect_client_location' );
 
 class Geo_Redirect{
 	private $ip;
