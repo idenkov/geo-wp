@@ -53,6 +53,7 @@ function geo_redirect_settings_page_display(){
 	$only_outsite = 0;
   $only_root = 0;
   $only_once = 0;
+	$redirect_expire = 365;
 	$lang_slug = 'lang';
 
 	$geo_redirect_data = get_option('geo_redirect_data');
@@ -63,6 +64,7 @@ function geo_redirect_settings_page_display(){
 		$only_outsite = $geo_redirect_data['only_outsite'];
     $only_root = $geo_redirect_data['only_root'];
     $only_once = $geo_redirect_data['only_once'];
+		$redirect_expire = $geo_redirect_data['redirect_expire'];
 		$lang_slug = $geo_redirect_data['lang_slug'];
 	}
 
@@ -190,7 +192,9 @@ function geo_redirect_settings_page_display(){
   $html .= '<br clear="all" />';
   $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
   $html .= '<br clear="all" />';
-  $html .= '<label><input type="checkbox" name="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
+  $html .= '<label><input type="checkbox" name="only_once" class="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
+	$html .= '<br clear="all" />';
+	$html .= '<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" style="display: none;" value="'.stripslashes($redirect_expire).'"/>&nbsp;';
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
 				</p>';
@@ -208,6 +212,14 @@ function geo_redirect_javascript() {
 	?>
 	<script type="text/javascript">
 		var j = jQuery;
+		//j(".redirect_expire").hide();
+		j('.only_once').click(function() {
+    	if( j(this).is(':checked')) {
+        	j(".redirect_expire").show();
+    	} else {
+        	j(".redirect_expire").hide();
+    }
+		});
 	  var geoRedirect = {
 
         url_scheme: '<?php echo $site_url_parsed['scheme']; ?>',
@@ -316,6 +328,7 @@ function geo_redirect_save(){
 	$only_outsite 	    = intval($_POST['only_outsite']);
   $only_root 	        = intval($_POST['only_root']);
   $only_once          = intval($_POST['only_once']);
+	$redirect_expire	= intval($_POST['redirect_expire']);
 	$lang_slug		    = (trim($_POST['lang_slug']) != '') ? (string)urlencode(strtolower(trim($_POST['lang_slug']))) : 'lang';
 	if (count($country_ids) > 0) {
 		$redirect = array();
@@ -347,7 +360,8 @@ function geo_redirect_save(){
 					'only_outsite' 	=> $only_outsite,
           'only_root'     => $only_root,
           'only_once'     => $only_once,
-					'lang_slug'		=> $lang_slug
+					'lang_slug'		=> $lang_slug,
+					'redirect_expire' => $redirect_expire
 				);
 
 	update_option( 'geo_redirect_data', $data);
