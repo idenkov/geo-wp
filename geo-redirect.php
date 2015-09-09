@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name:Geo Redirect
+Plugin Name:GeoIP Redirect
 Plugin URI:
 Description: Plugin that redirect visitors based on their location
 Author: Ivan Denkov
 Author URI: http://reallusiondesign.com/
 Author e-mail: ivan.denkov87@gmail.com
-Text Domain: geo-redirect
+Text Domain: geoip-redirect
 Version: 1.0
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -271,7 +271,9 @@ class Geo_Redirect{
 	{
         $this->beforeRedirect();
         $to = $this->sanitizeRedirect($to);
-        header("Location: " . $to);
+        if (!headers_sent()) {
+					header("Location: " . $to);
+				}
 		exit;
 	}
 
@@ -306,7 +308,7 @@ class Geo_Redirect{
 				return true;
 
 			$insite = parse_url($this->site_url);
-            $outsite = parse_url($this->referer);
+      $outsite = parse_url($this->referer);
 			if ($insite['scheme'] . '://' . $insite['host'] != $outsite['scheme'] . '://' . $outsite['host'])
 				return false;
 

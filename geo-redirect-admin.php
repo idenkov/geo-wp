@@ -29,7 +29,7 @@ function geo_redirect_admin_description(){
 function geo_redirect_pretty_permalink_checkbox($data){
     if ($data['lang_code'] == '')
         $data['lang_code'] = 'some_lang';
-    $html = '<label title="Redirect to ' . get_home_url() . '/' . $data['lang_code'] .'/ instead of ' . get_home_url() . '/?lang=' . $data['lang_code'] . '">Use pretty permalink<input type="checkbox" name="pretties[]" value="' . $data['country_id'] . '" ' . (($data['pretty'] == 1) ? 'checked="checked"' : '') . '></label>';
+    $html = '<label title="Redirect to ' . get_home_url() . '/' . $data['lang_code'] .'/ instead of ' . get_home_url() . '/?lang=' . $data['lang_code'] . '">Use pretty permalink<input type="checkbox" name="pretty_permalinks[]" value="' . $data['country_id'] . '" ' . (($data['pretty'] == 1) ? 'checked="checked"' : '') . '></label>';
     return $html;
 }
 
@@ -194,14 +194,14 @@ function geo_redirect_settings_page_display(){
   $html .= '<br clear="all" />';
   $html .= '<label><input type="checkbox" name="only_once" class="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
 	$html .= '<br clear="all" />';
-	$html .= '<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" style="display: none;" value="'.stripslashes($redirect_expire).'"/>&nbsp;';
+	$html .= '<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" value="'.stripslashes($redirect_expire).'"/>&nbsp;';
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
 				</p>';
 	$html .= wp_nonce_field('submit_geo_redirect_x', 'geo_redirect_nonce_y', true, false);
 	$html .= '</form></div>';
-	echo $html;
 
+	echo $html;
 	geo_redirect_javascript();
 
 	}
@@ -212,7 +212,11 @@ function geo_redirect_javascript() {
 	?>
 	<script type="text/javascript">
 		var j = jQuery;
-		//j(".redirect_expire").hide();
+		if( j('.only_once').is(':checked')) {
+				j(".redirect_expire").show();
+		} else {
+				j(".redirect_expire").hide();
+	}
 		j('.only_once').click(function() {
     	if( j(this).is(':checked')) {
         	j(".redirect_expire").show();
@@ -265,7 +269,7 @@ function geo_redirect_javascript() {
                                         '</select></p>'+
                                     '</td>'+
                                     '<td id="redirect_options_container_'+country_id+'">'+
-                                            '<p id="redirect_option_value_'+country_id+'_1" style="display:block"><input class="small-text" name="lang_codes[]" type="text" maxlength="3" value="'+lang_code+'"/>&nbsp;<label title="Redirect to '+geoRedirect.home_url+'/'+lang_code+'/ instead of '+geoRedirect.home_url+'/?lang='+lang_code+'">Use pretty permalink<input type="checkbox" name="pretties[]" value="'+country_id+'" ></label></p>'+
+                                            '<p id="redirect_option_value_'+country_id+'_1" style="display:block"><input class="small-text" name="lang_codes[]" type="text" maxlength="3" value="'+lang_code+'"/>&nbsp;<label title="Redirect to '+geoRedirect.home_url+'/'+lang_code+'/ instead of '+geoRedirect.home_url+'/?lang='+lang_code+'">Use pretty permalink<input type="checkbox" name="pretty_permalinks[]" value="'+country_id+'" ></label></p>'+
                                             '<p id="redirect_option_value_'+country_id+'_2" style="display:none"><input class="regular-text" name="domains[]" type="text" value="'+geoRedirect.url_scheme+'://'+country_code+'.'+geoRedirect.domain_url+'"/></p>'+
                                             '<p id="redirect_option_value_'+country_id+'_3" style="display:none"><input class="regular-text" name="urls[]" type="text" value="'+geoRedirect.home_url+'/'+country_code+'_visitors_sample_page/"/></p>'+
                                     '</td>'+
@@ -322,7 +326,7 @@ function geo_redirect_save(){
 	$country_ids 	    = (array) $_POST['country_ids'];
   $redirect_options 	= (array) $_POST['redirect_options'];
 	$lang_codes 	    = (array) $_POST['lang_codes'];
-  $pretties 	        = (array) $_POST['pretties'];
+  $pretty_permalinks 	        = (array) $_POST['pretty_permalinks']; 
 	$domains 		    = (array) $_POST['domains'];
 	$urls 			    = (array) $_POST['urls'];
 	$only_outsite 	    = intval($_POST['only_outsite']);
@@ -344,7 +348,7 @@ function geo_redirect_save(){
 								'country_id' 	    => intval($country_id),
                 'redirect_option' 	=> intval($redirect_options[$key]),
 								'lang_code' 	    => (string) htmlspecialchars( strtolower( trim( strip_tags( $lang_codes[$key] ) ) ) ),
-                'pretty'            => (in_array(intval($country_id),$pretties))?1:0,
+                'pretty'            => (in_array(intval($country_id),$pretty_permalinks))?1:0,
 								'domain' 		    => $domain,
 								'url' 			    => (string) htmlspecialchars( trim( strip_tags( $urls[$key] ) ) )
 							);
