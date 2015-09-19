@@ -285,7 +285,7 @@ class Geo_Redirect{
 	private function checkOnceCookie()
 	{
 		if ($this->getRedirectDataFlag('only_once') == 1) {
-			if (isset($_COOKIE['wordpress_geo_redirect_once'])) {
+			if (isset($_COOKIE['wp_geo_redirect_once'])) {
 				return true;
 			}
 		}

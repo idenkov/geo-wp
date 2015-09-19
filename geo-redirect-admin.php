@@ -192,9 +192,8 @@ function geo_redirect_settings_page_display(){
   $html .= '<br clear="all" />';
   $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
   $html .= '<br clear="all" />';
-  $html .= '<label><input type="checkbox" name="only_once" class="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>';
-	$html .= '<br clear="all" />';
-	$html .= '<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" value="'.stripslashes($redirect_expire).'"/>&nbsp;';
+  $html .= '<label><input type="checkbox" name="only_once" class="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>&nbsp;&nbsp;';
+	$html .= 'For<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" value="'.stripslashes($redirect_expire).'"/>days<b style="cursor:help" title="Define for how long the redirection will be valid. Default 1 year(365 days).">(?)</b>';
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
 				</p>';
@@ -326,7 +325,7 @@ function geo_redirect_save(){
 	$country_ids 	    = (array) $_POST['country_ids'];
   $redirect_options 	= (array) $_POST['redirect_options'];
 	$lang_codes 	    = (array) $_POST['lang_codes'];
-  $pretty_permalinks 	        = (array) $_POST['pretty_permalinks']; 
+  $pretty_permalinks 	        = (array) $_POST['pretty_permalinks'];
 	$domains 		    = (array) $_POST['domains'];
 	$urls 			    = (array) $_POST['urls'];
 	$only_outsite 	    = intval($_POST['only_outsite']);
