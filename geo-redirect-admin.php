@@ -7,23 +7,33 @@ defined('ABSPATH') or die("How About NO?");
 
 use IPlib\GeoIP;
 
-function geo_redirect_settings_page(){
 
-	if ( function_exists('add_submenu_page') )
-		add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_settings_page_display' );
+function geo_redirect_settings_page() {
+    $geo_options_page = add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_settings_page_display' );
 
-	}
+    // Adds my_help_tab when my_admin_page loads
+    add_action('load-'.$geo_options_page, 'my_admin_add_help_tab');
+}
 
-function geo_redirect_admin_description(){
-	$html = '<p>
-	This plugins allows you to redirect vistors on your site to different locations, languages and even outside the site with custom URL option.</p>
-			 <p>Just choose the country from the dropdown and fill in preferable options.</p>
-			 <p>The plugin does not create differnt language versions of your site, but it can be used in combination with such plugins.<br/>
-			 Be careful while entering redirect options, because wrong parameters can lead to infinite redirections etc.</p>
-			 <p>If you have some troubles accessing your site because of infinite redirect loop,
-			 just add to browser\'s url «no_redirect» (example: '.get_home_url().'/sample-page/?<b>no_redirect</b>) to switch off the redirection.</p>';
+function my_admin_add_help_tab () {
+    $screen = get_current_screen();
 
-	return $html;
+    // Add my_help_tab if current screen is My Admin Page
+    $screen->add_help_tab( array(
+        'id'	=> 'usage',
+        'title'	=> __('Usage'),
+        'content'	=> '<p>' . __('	This plugins allows you to redirect vistors on your site to different locations, languages or outside the site..<br />
+        			 Just choose the country from the dropdown and fill in preferable options.<br /><br />
+        			 The plugin does not create different language versions of your site, but it can be used in combination with such plugins.
+        			 Be careful while entering redirect options, because wrong parameters can lead to infinite redirections etc.
+        			 ') . '</p>',
+    ) );
+    $screen->add_help_tab(array(
+        'id' => 'troubleshooting',
+        'title' => __('Troubleshooting'),
+        'content' => '<p>' . __('If you have problems accessing your site frontend because of infinite redirect loop,<br />
+        just add to browser\'s url «no_redirect» (example: '.get_home_url().'/sample-page/?<b>no_redirect</b>) to disable the redirection.') . '</p>',
+    ) );
 }
 
 function geo_redirect_pretty_permalink_checkbox($data){
@@ -46,8 +56,6 @@ function geo_redirect_settings_page_display(){
     <div id="icon-options-general" class="icon32"><br></div>
     <h2>Geo Redirect Options</h2>
 	<form action="" method="post" enctype="multipart/form-data">';
-
-	$html .= geo_redirect_admin_description();
 
 	$redirect = '';
 	$only_outsite = 0;
@@ -88,7 +96,8 @@ function geo_redirect_settings_page_display(){
 	endif;
 
 
-    $html .= '<div class="geo-redirect-options">
+    $html .= '<style>#contextual-help-link{background: #5B9DD9 !important; color: #fff !important;}</style>
+    <div class="geo-redirect-options">
 	<table class="wp-list-table widefat plugins" cellspacing="0">
 		<thead>
 			<tr>
@@ -193,7 +202,7 @@ function geo_redirect_settings_page_display(){
   $html .= '<label><input type="checkbox" name="only_root" value="1" ' . (($only_root == 1) ? 'checked="checked"' : '' ) . '/> Redirect only visitors of  the site\'s root</label>&nbsp;<b style="cursor:help" title="Redirect options will be considered only if visitor is on ' . get_home_url() . ' page">(?)</b>';
   $html .= '<br clear="all" />';
   $html .= '<label><input type="checkbox" name="only_once" class="only_once" value="1" ' . (($only_once == 1) ? 'checked="checked"' : '' ) . '/> Redirect once</label>&nbsp;<b style="cursor:help" title="Redirection will occur just at first page visit. This requires client cookies support">(?)</b>&nbsp;&nbsp;';
-	$html .= 'For<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" value="'.stripslashes($redirect_expire).'"/>days<b style="cursor:help" title="Define for how long the redirection will be valid. Default 1 year(365 days).">(?)</b>';
+	$html .= '<div class="expire_ph">For<input class="small-text redirect_expire" name="redirect_expire" type="text" maxlength="3" value="'.stripslashes($redirect_expire).'"/>days<b style="cursor:help" title="Define for how long the redirection will be valid. Default 1 year(365 days).">(?)</b></div>';
 	$html .= '	<p class="submit">
 					<input type="submit" name="submit" class="button-primary" value="Save Changes">
 				</p>';
@@ -212,15 +221,15 @@ function geo_redirect_javascript() {
 	<script type="text/javascript">
 		var j = jQuery;
 		if( j('.only_once').is(':checked')) {
-				j(".redirect_expire").show();
+				j(".expire_ph").show();
 		} else {
-				j(".redirect_expire").hide();
+				j(".expire_ph").hide();
 	}
 		j('.only_once').click(function() {
     	if( j(this).is(':checked')) {
-        	j(".redirect_expire").show();
+        	j(".expire_ph").show();
     	} else {
-        	j(".redirect_expire").hide();
+        	j(".expire_ph").hide();
     }
 		});
 	  var geoRedirect = {
