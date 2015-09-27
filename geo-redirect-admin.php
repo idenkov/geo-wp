@@ -9,13 +9,13 @@ use IPlib\GeoIP;
 
 
 function geo_redirect_settings_page() {
-    $geo_options_page = add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('Geo Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_settings_page_display' );
+    $geo_options_page = add_submenu_page( 'options-general.php', __('Geo Redirect Options'), __('GeoIP Redirect'), 'manage_options', 'geo_redirect', 'geo_redirect_settings_page_display' );
 
     // Adds my_help_tab when my_admin_page loads
-    add_action('load-'.$geo_options_page, 'my_admin_add_help_tab');
+    add_action('load-'.$geo_options_page, 'geo_redirect_help_tab');
 }
 
-function my_admin_add_help_tab () {
+function geo_redirect_help_tab () {
     $screen = get_current_screen();
 
     // Add my_help_tab if current screen is My Admin Page
@@ -78,8 +78,8 @@ function geo_redirect_settings_page_display(){
 
 	$geoip = new GeoIP();
 	$countries = $geoip->GEOIP_COUNTRY_NAMES;
-    $country_codes = $geoip->GEOIP_COUNTRY_CODES;
-    $lang_codes = $geoip->GEOIP_LANG_CODES;
+  $country_codes = $geoip->GEOIP_COUNTRY_CODES;
+  $lang_codes = $geoip->GEOIP_LANG_CODES;
 	if (is_array($countries)) :
 		$html .= '<div class="tablenav top">';
 		$html .= '<div class="alignleft actions">';

@@ -75,11 +75,10 @@ class Geo_Redirect{
     private function getRequestUri()
     {
         if (!$this->site_url)
-            $this->site_url = get_home_url();
-
-        $site_url_parsed = parse_url($this->site_url);
-        $site_root = $site_url_parsed['scheme'] . '://' . $site_url_parsed['host'];
-        $uri = str_ireplace($this->site_url, '', $site_root . $_SERVER['REQUEST_URI']);
+        	$this->site_url = get_home_url();
+        	$site_url_parsed = parse_url($this->site_url);
+        	$site_root = $site_url_parsed['scheme'] . '://' . $site_url_parsed['host'];
+        	$uri = str_ireplace($this->site_url, '', $site_root . $_SERVER['REQUEST_URI']);
 
         return $uri;
     }
