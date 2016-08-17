@@ -28,13 +28,14 @@ use IPlib;
 
 defined('ABSPATH') or die("How About NO?");
 
-require_once "geoip/geoipcity.inc";
+require_once "mmdb/geoipcity.inc";
 require_once "geo-redirect-admin.php";
 
 
 add_action( 'check_visitor_location', 'Geo_Redirect\geo_redirect_client_location' );
 
 class Geo_Redirect{
+	private $hostip;
 	private $ip;
 	private $gi;
 	private	$country_code;
@@ -49,8 +50,9 @@ class Geo_Redirect{
 
 	public function __construct()
 	{
+		$this->hostip = $this->hostip();
 		$this->ip = $this->getVisitorIP();
-		$this->gi = IPlib\geoip_open( dirname(__FILE__) . "/geoip/db/GeoIP.dat", GEOIP_STANDARD);
+		$this->gi = IPlib\geoip_open( dirname(__FILE__) . "/mmdb/db/GeoIP.dat", GEOIP_STANDARD);
 		$this->site_url = get_home_url();
 		$this->request_uri = $this->getRequestUri();
 		$this->no_redirect = (isset($_GET['no_redirect']) || (isset($_POST['pwd']) && isset($_POST['log']))) ? true : false;
@@ -58,6 +60,29 @@ class Geo_Redirect{
 		$this->lang_slug = 'lang';
 		$this->getGeoRedirectData();
 		$this->getSiteLang();
+	}
+
+	private function hostip()
+	{
+		$ipurl = "http://ip-api.com/json/" . $ip;
+	 	$ch = curl_init($ipurl);
+	 	$headers = array(
+		 'Content-Type:application/json' );
+		 //'Authorization: Basic '. base64_encode(get_option('maxmind_userid') . ":" . get_option('maxmind_license_key') ) );
+		 curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+		 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		 $response = curl_exec($ch);
+		 curl_close($ch);
+		 //global $response;
+	 //Get the visitor town    //$ipurl = get_option('maxmind_service_url') . "46.10.117.238";
+	 //Need to check if the town it is within the file!!!
+		 //$mmcity = json_decode($response, true);
+		 //global $city;
+		 //$city = $mmcity['city']['names']['en'];
+		 echo $ipurl;
+		 echo $response;
 	}
 
 	private function getVisitorIP()
