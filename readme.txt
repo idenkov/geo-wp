@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: gruio
+Contributors: Ivan Denkov
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=R9SL7M6CUU6BE
 Tags: geo-redirect, geographical-redirect, geoip, multilanguage, multidomain
 Requires at least: 4.3
